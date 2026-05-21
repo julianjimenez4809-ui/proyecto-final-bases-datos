@@ -1,0 +1,11 @@
+sku,producto,categoria,precio_costo,precio_venta,margen_pct,unidades_vendidas,revenue_total,calificacion_promedio,num_resenas,stock_actual
+ELEC-LP-002,MacBook Air M2,Laptops,4500000,5999000,24.99,1,5999000,5.00,1,8
+ELEC-SM-001,Samsung Galaxy A54,Smartphones,850000,1199000,29.11,4,4676100,5.00,1,44
+ELEC-SM-002,iPhone 14 128GB,Smartphones,2800000,3799000,26.30,1,3799000,5.00,1,12
+ELEC-LP-001,Lenovo IdeaPad 3,Laptops,1500000,2199000,31.79,1,1979100,0,0,30
+DEP-001,Bicicleta MTB Trek Marlin,Deportes,1200000,1899000,36.81,1,1899000,5.00,1,4
+ROPA-CAM-001,Camiseta Polo Ralph Lauren,Camisetas,95000,189000,49.74,5,926100,4.00,1,120
+ROPA-CAM-002,Camiseta Nike Dri-FIT,Camisetas,55000,99000,44.44,3,297000,0,0,95
+ROPA-CAL-002,Tenis Adidas Ultraboost 22,Calzado,350000,599000,41.57,1,509150,0,0,22
+ROPA-CAL-001,Tenis Nike Air Max 270,Calzado,280000,449000,37.64,1,449000,0,0,35
+HOGAR-001,Licuadora Oster Pro,Hogar y Jardín,120000,229000,47.60,0,0,0,0,60

@@ -1,0 +1,5 @@
+metodo,total_intentos,aprobados,rechazados,tasa_aprobacion_pct,revenue_capturado
+pse,2,2,0,100.0,9798000
+nequi,3,2,0,66.7,4772800
+tarjeta,4,3,0,75.0,3906000
+daviplata,1,0,0,0.0,0

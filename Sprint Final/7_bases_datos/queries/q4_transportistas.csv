@@ -1,0 +1,4 @@
+transportista,envios_totales,entregados,tasa_entrega_pct,dias_promedio_entrega
+Servientrega,2,2,100.0,2.0
+Envia,2,1,50.0,2.0
+Coordinadora,2,1,50.0,2.0
