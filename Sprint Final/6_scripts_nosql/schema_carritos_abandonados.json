@@ -1,0 +1,100 @@
+{
+  "collection": "carritos_abandonados",
+  "description": "Captura carritos no convertidos a pedido. Cada documento representa el último estado del carrito antes del abandono. Usado para remarketing y análisis de fricción. cliente_id y items[].producto_id referencian PostgreSQL.",
+
+  "indexes": [
+    { "key": { "cliente_id": 1 },     "name": "idx_cliente" },
+    { "key": { "estado": 1 },         "name": "idx_estado" },
+    { "key": { "fecha_abandono": 1 }, "name": "idx_fecha" },
+    {
+      "key": { "fecha_recuperado": 1 },
+      "expireAfterSeconds": 2592000,
+      "partialFilterExpression": { "estado": "recuperado" },
+      "name": "idx_ttl_recuperados_30dias"
+    }
+  ],
+
+  "validator": {
+    "$jsonSchema": {
+      "bsonType": "object",
+      "required": ["cliente_id", "items", "monto_total", "estado", "fecha_abandono"],
+      "properties": {
+        "cliente_id":     { "bsonType": "string" },
+        "items":          { "bsonType": "array" },
+        "monto_total":    { "bsonType": "double" },
+        "estado":         { "bsonType": "string", "enum": ["activo", "recuperado", "expirado"] },
+        "fecha_abandono": { "bsonType": "date" }
+      }
+    }
+  },
+
+  "sample_documents": [
+    {
+      "_id": { "$oid": "6542f3a1b2c3d4e5f6a7b8c9" },
+      "cliente_id": "22222222-0000-0000-0000-000000000006",
+      "sesion_id":  "ses_20251022_cam_003",
+      "items": [
+        {
+          "producto_id":    "44444444-0000-0000-0000-000000000003",
+          "sku":            "ELEC-LP-001",
+          "nombre":         "Laptop Lenovo V15",
+          "cantidad":       1,
+          "precio_unitario": 2599000,
+          "descuento_aplicado": 0,
+          "subtotal":       2599000
+        },
+        {
+          "producto_id":    "44444444-0000-0000-0000-000000000009",
+          "sku":            "ELEC-AUD-001",
+          "nombre":         "Auriculares Sony WH-1000XM4",
+          "cantidad":       1,
+          "precio_unitario": 320000,
+          "descuento_aplicado": 0,
+          "subtotal":       320000
+        }
+      ],
+      "monto_total":    2919000,
+      "estado":         "activo",
+      "ultimo_paso":    "checkout_pago",
+      "razon_inferida": "precio",
+      "fecha_abandono": { "$date": "2025-10-22T17:30:00Z" },
+      "fecha_recuperado": null,
+      "remarketing": {
+        "email_enviado":   true,
+        "fecha_email":     { "$date": "2025-10-23T10:00:00Z" },
+        "descuento_ofrecido_pct": 10,
+        "click_email":     false
+      }
+    },
+
+    {
+      "_id": { "$oid": "6542f3a1b2c3d4e5f6a7b8ca" },
+      "cliente_id": "22222222-0000-0000-0000-000000000004",
+      "sesion_id":  "ses_20251025_ped_004",
+      "items": [
+        {
+          "producto_id":    "44444444-0000-0000-0000-000000000006",
+          "sku":            "ROPA-VF-001",
+          "nombre":         "Vestido Floral",
+          "cantidad":       2,
+          "precio_unitario": 120000,
+          "descuento_aplicado": 15,
+          "subtotal":       204000
+        }
+      ],
+      "monto_total":    204000,
+      "estado":         "recuperado",
+      "ultimo_paso":    "checkout_direccion",
+      "razon_inferida": "distracccion",
+      "fecha_abandono": { "$date": "2025-10-25T11:45:00Z" },
+      "fecha_recuperado": { "$date": "2025-10-25T14:20:00Z" },
+      "pedido_recuperado_id": "55555555-0000-0000-0000-000000000005",
+      "remarketing": {
+        "email_enviado":   true,
+        "fecha_email":     { "$date": "2025-10-25T12:30:00Z" },
+        "descuento_ofrecido_pct": 15,
+        "click_email":     true
+      }
+    }
+  ]
+}

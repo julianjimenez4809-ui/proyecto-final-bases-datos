@@ -1,0 +1,146 @@
+{
+  "collection": "catalogo_productos",
+  "description": "Enriquece la tabla producto de PostgreSQL con atributos variables, imágenes, tags y historial de precios. El _id es el mismo UUID que producto.producto_id en Supabase.",
+
+  "indexes": [
+    { "key": { "categoria": 1 }, "name": "idx_categoria" },
+    { "key": { "tags": 1 }, "name": "idx_tags" },
+    { "key": { "activo": 1, "precio_venta": 1 }, "name": "idx_activo_precio" },
+    { "key": { "nombre": "text", "descripcion": "text", "tags": "text" }, "name": "idx_texto_busqueda" }
+  ],
+
+  "validator": {
+    "$jsonSchema": {
+      "bsonType": "object",
+      "required": ["_id", "sku", "nombre", "categoria", "precio_venta", "activo"],
+      "properties": {
+        "_id":          { "bsonType": "string", "description": "UUID de producto en PostgreSQL" },
+        "sku":          { "bsonType": "string" },
+        "nombre":       { "bsonType": "string" },
+        "descripcion":  { "bsonType": "string" },
+        "categoria":    { "bsonType": "string" },
+        "precio_venta": { "bsonType": "double" },
+        "activo":       { "bsonType": "bool" },
+        "imagenes":     { "bsonType": "array" },
+        "tags":         { "bsonType": "array" },
+        "especificaciones": { "bsonType": "object" },
+        "historial_precios": { "bsonType": "array" }
+      }
+    }
+  },
+
+  "sample_documents": [
+    {
+      "_id": "44444444-0000-0000-0000-000000000001",
+      "sku": "ELEC-SM-001",
+      "nombre": "Samsung Galaxy A54",
+      "descripcion": "Smartphone 128GB RAM 6GB, pantalla AMOLED 6.4 pulgadas",
+      "categoria": "Smartphones",
+      "categoria_padre": "Electrónica",
+      "precio_venta": 1199000,
+      "activo": true,
+      "imagenes": [
+        { "url": "https://cdn.shopco.co/productos/sm-a54-front.jpg", "orden": 1, "principal": true },
+        { "url": "https://cdn.shopco.co/productos/sm-a54-back.jpg",  "orden": 2, "principal": false }
+      ],
+      "tags": ["smartphone", "samsung", "android", "5g", "camara-triple"],
+      "especificaciones": {
+        "marca":       "Samsung",
+        "modelo":      "Galaxy A54",
+        "ram_gb":      6,
+        "almacenamiento_gb": 128,
+        "pantalla_pulgadas": 6.4,
+        "pantalla_tipo":    "AMOLED",
+        "bateria_mah":      5000,
+        "sistema_operativo":"Android 13",
+        "camara_mp":        50,
+        "conectividad":     ["5G", "WiFi 6", "Bluetooth 5.3"],
+        "color":            "Awesome Violet",
+        "garantia_meses":   12
+      },
+      "historial_precios": [
+        { "precio": 1399000, "desde": "2025-01-01", "hasta": "2025-05-31", "motivo": "Precio lanzamiento" },
+        { "precio": 1299000, "desde": "2025-06-01", "hasta": "2025-09-30", "motivo": "Promo mitad de año" },
+        { "precio": 1199000, "desde": "2025-10-01", "hasta": null,         "motivo": "Precio vigente" }
+      ],
+      "calificacion_promedio": 4.5,
+      "num_resenas": 127,
+      "vistas_totales": 8432,
+      "fecha_creacion": "2025-01-01T00:00:00Z",
+      "ultima_actualizacion": "2025-10-01T00:00:00Z"
+    },
+
+    {
+      "_id": "44444444-0000-0000-0000-000000000003",
+      "sku": "ELEC-LP-001",
+      "nombre": "Laptop Lenovo V15",
+      "descripcion": "Intel Core i5 12va gen, 8GB RAM, 512GB SSD NVMe",
+      "categoria": "Computadores",
+      "categoria_padre": "Electrónica",
+      "precio_venta": 2599000,
+      "activo": true,
+      "imagenes": [
+        { "url": "https://cdn.shopco.co/productos/lenovo-v15-top.jpg",  "orden": 1, "principal": true },
+        { "url": "https://cdn.shopco.co/productos/lenovo-v15-side.jpg", "orden": 2, "principal": false }
+      ],
+      "tags": ["laptop", "lenovo", "intel", "trabajo", "estudiantes", "ssd"],
+      "especificaciones": {
+        "marca":          "Lenovo",
+        "modelo":         "V15 G3 IAP",
+        "procesador":     "Intel Core i5-1235U",
+        "ram_gb":         8,
+        "almacenamiento_gb": 512,
+        "tipo_almacenamiento": "SSD NVMe",
+        "pantalla_pulgadas": 15.6,
+        "pantalla_tipo":  "IPS FHD",
+        "sistema_operativo": "Windows 11 Home",
+        "peso_kg":        1.7,
+        "autonomia_horas": 7,
+        "puertos":        ["USB-A x2", "USB-C", "HDMI", "RJ45"],
+        "garantia_meses": 12
+      },
+      "historial_precios": [
+        { "precio": 2899000, "desde": "2025-01-01", "hasta": "2025-07-31", "motivo": "Precio inicial" },
+        { "precio": 2599000, "desde": "2025-08-01", "hasta": null,         "motivo": "Ajuste competitivo" }
+      ],
+      "calificacion_promedio": 4.2,
+      "num_resenas": 43,
+      "vistas_totales": 3211,
+      "fecha_creacion": "2025-01-01T00:00:00Z",
+      "ultima_actualizacion": "2025-08-01T00:00:00Z"
+    },
+
+    {
+      "_id": "44444444-0000-0000-0000-000000000005",
+      "sku": "ROPA-CM-001",
+      "nombre": "Camisa Oxford Azul",
+      "descripcion": "Camisa formal manga larga, tela Oxford 100% algodón",
+      "categoria": "Ropa Masculina",
+      "categoria_padre": "Ropa y Moda",
+      "precio_venta": 89000,
+      "activo": true,
+      "imagenes": [
+        { "url": "https://cdn.shopco.co/productos/camisa-oxford-frente.jpg", "orden": 1, "principal": true }
+      ],
+      "tags": ["camisa", "formal", "oxford", "algodon", "manga-larga", "hombre"],
+      "especificaciones": {
+        "marca":     "ShopCo Basics",
+        "material":  "100% Algodón Oxford",
+        "tallas_disponibles": ["S", "M", "L", "XL", "XXL"],
+        "colores_disponibles": ["Azul claro", "Blanco", "Gris"],
+        "ajuste":    "Regular fit",
+        "cuidado":   "Lavado a máquina 30°C",
+        "origen":    "Colombia"
+      },
+      "historial_precios": [
+        { "precio": 99000, "desde": "2025-01-01", "hasta": "2025-09-30", "motivo": "Precio base" },
+        { "precio": 89000, "desde": "2025-10-01", "hasta": null,         "motivo": "Temporada baja" }
+      ],
+      "calificacion_promedio": 4.0,
+      "num_resenas": 88,
+      "vistas_totales": 1560,
+      "fecha_creacion": "2025-01-01T00:00:00Z",
+      "ultima_actualizacion": "2025-10-01T00:00:00Z"
+    }
+  ]
+}

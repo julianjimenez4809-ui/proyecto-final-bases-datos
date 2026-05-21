@@ -1,0 +1,144 @@
+RÚBRICA — PROYECTO FINAL INTEGRADOR (100 PTS)
+FECHA DE PRESENTACIÓN: LUNES 24 DE NOVIEMBRE DE 2025 (FECHA NO 
+NEGOCIABLE)
+En equipos de 4 o 5 integrantes, elijan una industria o caso, basado en la realidad
+o en hechos reales, y realicen una investigación sobre los Sistemas de Gestión de 
+Bases de Datos (SGBD) involucrados.
+Con base en los criterios de la rúbrica, presenten una propuesta de optimización y 
+mejora para esas bases de datos.
+La propuesta se sustentará ante la CTO/Directora de tecnologías (la profesora), 
+simulando un contexto corporativo de la industria elegida, y deberá comunicarse 
+de forma asertiva:
+1. Contexto inicial (qué hace la organización y qué datos gestiona)
+2. Problema (brecha, ineficiencia o riesgo identificado)
+3. Mejora propuesta (qué cambian y cómo)
+4. ER y Reglas de negocio
+5. Bases de datos SQL y NO SQL
+6. Nube propuesta
+7. Contexto legal, ético y de calidad
+8. Impacto esperado con cifras y métricas (costos/beneficios, performance, 
+riesgo, ROI), indicando fuentes y supuestos.
+9. Consultas
+Asimismo, deben ir guardando sus avances en carpetas ordenadas en One Drive 
+o en Share Point. Recuerden en ambos casos hacerme miembro de las carpetas, 
+ya que al final voy a revisar los contenidos. Pueden adjuntar el link de las 
+carpetas/proyectos en este forms
+https://forms.office.com/r/zTz0tqUEs4?origin=lprLink
+PRESENTACIÓN 
+El día de la presentación se tendrán en cuenta los siguientes aspectos:
+1. Dress code: Business Formal para un contexto corporativo
+2. Presentación con diapositivas 
+3. Gráficas y cifras claras
+4. De 5 a 10 minutos máximo de presentación 
+5. Comunicación asertiva y clara 
+6. Puntualidad
+RÚBRICA Y MATRIZ DE EVALUACIÓN (CRITERIOS, PESOS Y NIVELES)
+Niveles (orientativo): Excelente (100%) / Bueno (85%) / Básico (70%) / Deficiente 
+(≤50%)
+Máxima nota: 100 puntos 
+Modelo ER (10 pts)
+• Excelente: Entidades bien normalizadas; atributos definidos; roles clave
+PK/FK claras; cardinalidades correctas; tipos de datos; si aplica, 
+super/subtipos justificados.
+• Bueno: leves inconsistencias en cardinalidades o tipos.
+• Básico: ER incompleto (faltan PK/FK o relaciones clave).
+• Deficiente: incoherente con el negocio.
+Reglas de negocio (5 pts)
+• Excelente: 5 o más reglas verificables, trazables a tablas/constraints.
+• Bueno: 4 a 5 reglas, algunas ambiguas.
+• Básico: 2 a 3 reglas generales.
+• Deficiente: menos de 2 reglas o no verificables.
+SQL – Implementación y consultas (15 pts)
+(DDL, DML, JOINS, subconsultas, agregaciones, ventanas, vistas, 1 proc y 1 
+función)
+• Excelente: script ejecuta sin errores y produce resultados correctos y 
+explicados.
+• Bueno: ejecuta con mínimos ajustes.
+• Básico: requiere correcciones notables.
+• Deficiente: no ejecuta o resultados erróneos.
+Módulo NoSQL (15 pts) 
+• Excelente: modelo documental/clave-valor bien diseñado (colecciones, 
+claves de partición/índices); mas de 2 consultas/aggregations útiles; 
+integración mínima con el dominio relacional (ej., catálogo, eventos, logs o 
+cache).
+• Bueno: modelo correcto con 1 consulta relevante; integración superficial.
+• Básico: solo carga datos sin criterios de modelado.
+• Deficiente: sin evidencia o incoherente.
+Arquitectura en la nube (10 pts) 
+(AWS/Azure/GCP u otro: diagrama + despliegue mínimo graficado)
+• Excelente: diagrama claro con 1 servicio core (compute: 
+Functions/Lambda/Cloud Run o VM), 1 servicio de BD gestionada (SQL o 
+NoSQL), almacenamiento (Blob/S3/GCS), IAM/Secret Manager, 
+observabilidad (logs/metrics); justifica la elección y muestra evidencia de 
+despliegue o comandos.
+• Bueno: diagrama correcto y PoC parcial.
+• Básico: diagrama genérico sin mapeo a servicios reales.
+• Deficiente: sin arquitectura.
+Costeo y ROI (15 pts) 
+(Proyección de costos incluyendo impuestos y ROI, costos reales de la industria)
+• Excelente: supuestos explícitos (tráfico/volumen, horas), estimación de 
+costos por recurso impuestos incluidos (compute, BD, storage, 
+transferencias, usuarios), talento humano si se requiere (seguridad social 
+incluida); fórmula ROI y escenarios; conclusión ejecutiva clara.
+• Bueno: costos aproximados, ROI sin escenarios.
+• Básico: lista de precios sin supuestos/conclusión.
+• Deficiente: no cuantifica.
+Legal y Ética (10 pts) 
+• Excelente: identifica datos personales tratados, base legal tanto nacional 
+como internacional y principios (consentimiento, finalidad, minimización, 
+seguridad, retención), riesgos y mitigaciones; política de uso, 
+consideraciones éticas (sesgos, explicabilidad, transparencia, trazabilidad). 
+También se identifica estándares internacionales de calidad según el caso.
+• Bueno: cubre ley, ética o estándares de calidad, pero superficialmente.
+• Básico: mención general sin medidas.
+• Deficiente: omite riesgos y normativa.
+Análisis de resultados (10 pts)
+(≥5 consultas con interpretación de negocio)
+• Excelente: insights accionables, métricas correctas, límites y próximos 
+pasos.
+• Bueno: interpreta pero con poca profundidad.
+• Básico: describe resultados sin lectura de negocio.
+• Deficiente: sin interpretación.
+Presentación ejecutiva (10 pts)
+(5 - 10 min; historia, visuales, recomendaciones)
+• Excelente: narrativa clara, visuales legibles, decisión/roadmap y riesgos.
+• Bueno: ligera dispersión.
+• Básico: lectura de slides.
+• Deficiente: desorden o sin mensaje.
+PRIMERA ENTREGA (1 de SEPTIEMBRE DE 2025)
+1. Carpeta del proyecto
+2. En la carpeta un archivo .pdf con el resumen de kick-off: nombres de los 
+miembros, perfilamiento de roles bajo la metodología SCRUM, industria
+escogida, el problema de la industria en cifras, SGBD a optimizar, metas, 
+objetivos, cronograma, y siguientes pasos.
+SEGUNDA ENTREGA (17 DE OCTUBRE DE 2025)
+1. Avances del proyecto en cada punto de la rúbrica
+ENTREGA FINAL (24 DE NOVIEMBRE DE 2025 FECHA NO NEGOCIABLE)
+En la carpeta del proyecto, deben crear una subcarpeta final llamada “Sprint Final”
+en esta carpeta debe estar:
+1. Presentación .ppt o .pdf
+2. Informe con los componentes principales del problema del negocio en 
+cifras, solución propuesta, metas claras, objetivos, el plan de tiempos
+estimado, planeación, bases de datos utilizadas, los principales puntos de 
+los script tanto de SQL como NO SQL, resumen de la nube, principales 
+puntos legales y éticos, normas de calidad, principales cifras financieras, y 
+los resultados, en máximo 5 páginas. 
+3. Archivo de modelo ER .pdf o .jpg
+4. Documentación y biblioteca de reglas de negocio, en formato base de datos 
+.txt, .csv, .xlsx
+5. Scripts SQL .txt .pdf o .sql, si son varios pueden crear una subcarpeta
+6. Script NoSQL .txt, . json/.bson o el README de su preferencia, si son 
+varios pueden crear una subcarpeta
+7. Bases de datos, tanto las iniciales, como las que fueron creando, esto en 
+una carpeta dentro de “Sprint final” en formato .csv .xlsx
+8. Modelo de arquitectura en la nube formato en máximo 2 páginas .pdf, .png 
+.jpg .txt, si son varios pueden crear una subcarpeta con máximo 2 archivos.
+9. Informe financiero de máximo dos (02) páginas .pdf
+10. Marco legal, ético y todos los estándares que se aplican en máximo 2 
+páginas .pdf.
+11.Un archivo .zip con todo lo anterior por si se pierde información en la nube 
+Asegúrense de que la carpeta quede bien guardada, en cuyo caso no pueda 
+ingresar o algo pase, les solicitaré el archivo .zip
+Si usan supabase o cualquier otro entorno en línea asegúrense de compartirme
+las llaves y acceso a los proyectos. 
+¡Éxitos
