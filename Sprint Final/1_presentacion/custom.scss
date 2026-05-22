@@ -10,7 +10,7 @@ $presentation-heading-font-weight: 700;
 /*-- scss:rules --*/
 
 /* ── BASE ─────────────────────────────────────────────── */
-.reveal { font-size: 0.88em; }
+.reveal { font-size: 1.06em; }
 
 .reveal .slides section {
   padding: 18px 44px !important;
@@ -67,16 +67,21 @@ $presentation-heading-font-weight: 700;
 .loss-total { color:#e8b84b; font-size:0.84em; display:block; margin-top:7px; }
 
 /* ── PROPOSAL ─────────────────────────────────────────── */
-.prop-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:8px; height:calc(100% - 60px); }
-.prop-card { border-radius:12px; padding:18px 15px; font-size:0.8em; color:#e9ecef; text-align:center; line-height:1.6; }
-.prop-card strong { font-size:1.1em; display:block; margin:8px 0 10px; }
+.prop-card {
+  border-radius:14px; padding:22px 18px; font-size:0.9em;
+  color:#e9ecef; text-align:center; line-height:1.65;
+  height:100%; display:flex; flex-direction:column; align-items:center;
+}
+.prop-icon { font-size:2em; margin-bottom:6px; }
+.prop-card strong { font-size:1.15em; display:block; margin:4px 0 12px; }
+.prop-body { color:#c9d1d9; font-size:0.88em; line-height:1.7; flex:1; }
 .card-blue   { background:linear-gradient(150deg,#0d2137,#1a3a5c); border:1px solid #2a5a8c; }
 .card-blue strong { color:#5ba4f5; }
 .card-green  { background:linear-gradient(150deg,#0d2e14,#1a5c2a); border:1px solid #2a8c3a; }
 .card-green strong { color:#69db7c; }
 .card-orange { background:linear-gradient(150deg,#2e1a00,#5c3a0d); border:1px solid #8c5a1a; }
 .card-orange strong { color:#ffa94d; }
-.badge-gold { color:#e8b84b; font-weight:700; display:block; margin-top:12px; font-size:0.95em; }
+.badge-gold { color:#e8b84b; font-weight:700; display:block; margin-top:14px; font-size:0.95em; }
 .badge-sub  { color:#6c757d; font-size:0.82em; display:block; margin-top:2px; }
 
 /* ── ER SLIDE ─────────────────────────────────────────── */
@@ -105,11 +110,16 @@ $presentation-heading-font-weight: 700;
 .integration-box { background:#0d1f2e; border-left:3px solid #e8b84b; padding:8px 12px; border-radius:5px; font-size:0.8em; }
 
 /* ── RESULTS SLIDE ────────────────────────────────────── */
-.results-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:10px; }
-.res-card { background:#0d1f2e; border:1px solid #1a3a5c; border-radius:10px; padding:13px; font-size:0.82em; }
-.res-card strong { display:block; color:#f8f9fa; margin-bottom:9px; font-size:1em; }
-.bar-block { margin:0 0 8px; }
-.bar-fill  { height:7px; border-radius:3px; margin:2px 0 8px; }
+.res-card { background:#0d1f2e; border:1px solid #1a3a5c; border-radius:10px; padding:14px; font-size:0.86em; height:100%; }
+.res-card strong { display:block; color:#f8f9fa; margin-bottom:10px; font-size:1.05em; border-bottom:1px solid #1a3a5c; padding-bottom:6px; }
+.bar-row-item { display:flex; justify-content:space-between; font-size:0.88em; color:#adb5bd; margin-top:8px; margin-bottom:3px; }
+.bar-track { background:#1a2d40; border-radius:4px; height:9px; width:100%; margin-bottom:8px; }
+.client-table { width:100%; font-size:0.84em; border-collapse:collapse; }
+.client-table td { padding:4px 6px; border-bottom:1px solid #1a2d40; color:#ced4da; }
+.client-table td:nth-child(2) { font-weight:700; text-align:right; }
+.kpi-table { width:100%; font-size:0.84em; border-collapse:collapse; }
+.kpi-table td { padding:5px 7px; border-bottom:1px solid #1a2d40; color:#ced4da; }
+.kpi-table td:last-child { font-weight:700; text-align:right; }
 .rv-gold  { color:#e8b84b; font-weight:700; }
 .rv-blue  { color:#5ba4f5; font-weight:700; }
 .rv-green { color:#2d9a4e; font-weight:700; }

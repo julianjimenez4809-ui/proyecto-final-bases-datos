@@ -12,8 +12,8 @@ format:
     highlight-style: github-dark
     width: 1280
     height: 720
-    margin: 0.05
-    center: false
+    margin: 0.04
+    center: true
     logo: ""
     footer: "ShopCo · Proyecto Final Bases de Datos · 2026"
 ---
@@ -116,47 +116,59 @@ CREATE TABLE productos (
 
 ## Nuestra Propuesta {background-color="#0d1117"}
 
-::: {.prop-grid}
+::: {.columns}
+::: {.column width="33%"}
 ::: {.prop-card .card-blue}
-🗄️
+<div class="prop-icon">🗄️</div>
 
 **SQL Robusto**
 
-10 tablas · 3FN
-24 constraints verificables
-3 vistas analíticas
-1 stored procedure · 3 funciones
+<div class="prop-body">
+10 tablas · 3FN<br>
+24 constraints verificables<br>
+3 vistas analíticas<br>
+1 stored procedure · 3 funciones<br>
 8 índices de soporte
+</div>
 
 [✓ En producción — Supabase]{.badge-gold}
 :::
+:::
 
+::: {.column width="33%"}
 ::: {.prop-card .card-green}
-🍃
+<div class="prop-icon">🍃</div>
 
 **NoSQL Complementario**
 
-MongoDB Atlas M10
-3 colecciones diseñadas
-5 aggregation pipelines
-TTL automático (90/30 días)
+<div class="prop-body">
+MongoDB Atlas M10<br>
+3 colecciones diseñadas<br>
+5 aggregation pipelines<br>
+TTL automático (90 / 30 días)<br>
 Integración por UUID con SQL
+</div>
 
 [✓ Diseñado e integrado]{.badge-gold}
 :::
+:::
 
+::: {.column width="33%"}
 ::: {.prop-card .card-orange}
-☁️
+<div class="prop-icon">☁️</div>
 
 **Arquitectura Cloud AWS**
 
-Lambda + API Gateway
-Supabase + MongoDB Atlas
-S3 · CloudFront · IAM
-Secrets Manager · CloudWatch
+<div class="prop-body">
+Lambda + API Gateway<br>
+Supabase + MongoDB Atlas<br>
+S3 · CloudFront · IAM<br>
+Secrets Manager · CloudWatch<br>
 us-east-1 — misma región
+</div>
 
 [$684K COP/mes con IVA]{.badge-gold}
+:::
 :::
 :::
 
@@ -165,12 +177,14 @@ us-east-1 — misma región
 ## ER y Reglas de Negocio {background-color="#0d1117"}
 
 ::: {.columns}
-::: {.column width="50%"}
+::: {.column width="55%"}
 
-![](../3_modelo_er/er_shopco.svg){width="100%" style="border-radius:8px; border:1px solid #1a3a5c;"}
+<div style="overflow:hidden;border-radius:8px;border:1px solid #1a3a5c;max-height:500px">
+![](../3_modelo_er/er_shopco.svg){width="100%"}
+</div>
 
 :::
-::: {.column width="50%"}
+::: {.column width="45%"}
 
 ::: {.er-table}
 | Tipo | N° | Ejemplo clave |
@@ -320,55 +334,58 @@ db.sesiones_usuario.aggregate([
 
 ## Análisis de Resultados {background-color="#0d1117"}
 
-### 6 queries con datos reales de Supabase
+### 6 queries con datos reales ejecutados en Supabase
 
-::: {.results-grid}
+::: {.columns}
+::: {.column width="34%"}
 ::: {.res-card}
 **📊 Revenue por categoría**
 
-::: {.bar-block}
-Electrónica · [$16.4M]{.rv-gold}
-::: {.bar-fill style="width:80%;background:#e8b84b"}
-:::
-Ropa y Moda · [$2.2M]{.rv-blue}
-::: {.bar-fill style="width:13%;background:#5ba4f5"}
-:::
-Deportes · [$1.9M]{.rv-green}
-::: {.bar-fill style="width:10%;background:#2d9a4e"}
+<div class="bar-row-item">Electrónica · <span class="rv-gold">$16.4M</span></div>
+<div class="bar-track"><div style="width:80%;height:9px;border-radius:4px;background:#e8b84b"></div></div>
+
+<div class="bar-row-item">Ropa y Moda · <span class="rv-blue">$2.2M</span></div>
+<div class="bar-track"><div style="width:13%;height:9px;border-radius:4px;background:#5ba4f5"></div></div>
+
+<div class="bar-row-item">Deportes · <span class="rv-green">$1.9M</span></div>
+<div class="bar-track"><div style="width:10%;height:9px;border-radius:4px;background:#2d9a4e"></div></div>
+
+[💡 Electrónica = **80%** del revenue con 7 uds. Priorizar stock y campañas.]{.insight-text}
 :::
 :::
 
-[💡 Electrónica = **80%** del revenue con solo 7 uds vendidas. Priorizar stock y campañas aquí.]{.insight-text}
-:::
-
+::: {.column width="36%"}
 ::: {.res-card}
 **👑 Clientes por valor**
 
-::: {.client-list}
-Valentina Ríos · [$7.6M]{.rv-gold} · Platinum
-Sebastián Morales · [$3.8M]{.rv-blue} · Gold
-Daniela Castro · [$2.5M]{.rv-blue} · Gold
-Nicolás Pérez · [$2.3M]{.rv-blue} · Gold
-Laura Vargas · [$1.9M]{.rv-green} · Silver
-Andrés Gutiérrez · [$449K]{.rv-gray} · Bronze
+<table class="client-table">
+<tr><td>Valentina Ríos</td><td class="rv-gold">$7.6M</td><td>🥇 Platinum</td></tr>
+<tr><td>Sebastián Morales</td><td class="rv-blue">$3.8M</td><td>🥈 Gold</td></tr>
+<tr><td>Daniela Castro</td><td class="rv-blue">$2.5M</td><td>🥈 Gold</td></tr>
+<tr><td>Nicolás Pérez</td><td class="rv-blue">$2.3M</td><td>🥈 Gold</td></tr>
+<tr><td>Laura Vargas</td><td class="rv-green">$1.9M</td><td>🥉 Silver</td></tr>
+<tr><td>Andrés Gutiérrez</td><td class="rv-gray">$449K</td><td>Bronze</td></tr>
+</table>
+
+[💡 1 cliente = **41%** del revenue. 83% compraron 1 vez → retención urgente.]{.insight-text}
+:::
 :::
 
-[💡 1 cliente = **41%** del revenue. 83% compraron 1 sola vez → campaña de retención urgente.]{.insight-text}
-:::
-
+::: {.column width="30%"}
 ::: {.res-card}
 **🏆 Métricas operativas**
 
-::: {.kpi-list}
-PSE aprobación · [100%]{.rv-green}
-NPS implícito · [4.8/5 ⭐]{.rv-green}
-Servientrega · [100% · 2 días]{.rv-green}
-Mayor margen · [Bici 36.8%]{.rv-gold}
-Stock crítico · [4 uds ⚠️]{.rv-red}
-Sin reseñas · [Lenovo · 30 uds]{.rv-gold}
-:::
+<table class="kpi-table">
+<tr><td>PSE aprobación</td><td class="rv-green">100%</td></tr>
+<tr><td>NPS implícito</td><td class="rv-green">4.8/5 ⭐</td></tr>
+<tr><td>Servientrega</td><td class="rv-green">100% · 2d</td></tr>
+<tr><td>Mayor margen</td><td class="rv-gold">Bici 36.8%</td></tr>
+<tr><td>Stock crítico</td><td class="rv-red">4 uds ⚠️</td></tr>
+<tr><td>Sin reseñas</td><td class="rv-gold">Lenovo 30u</td></tr>
+</table>
 
-[💡 PSE es el método más confiable. Daviplata tiene 0% aprobación — revisar integración.]{.insight-text}
+[💡 PSE más confiable. Daviplata 0% aprobación → revisar pasarela.]{.insight-text}
+:::
 :::
 :::
 
