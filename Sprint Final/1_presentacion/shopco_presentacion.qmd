@@ -1,0 +1,568 @@
+---
+title: "ShopCo E-Commerce"
+subtitle: "Propuesta de Optimización de Base de Datos"
+author: "Equipo ShopCo · Proyecto Final Bases de Datos"
+date: "Noviembre 2025"
+format:
+  revealjs:
+    theme: [dark, custom.scss]
+    slide-number: true
+    progress: true
+    transition: slide
+    transition-speed: fast
+    background-transition: fade
+    highlight-style: github-dark
+    code-block-height: 280px
+    width: 1280
+    height: 720
+    margin: 0.08
+    center: false
+    logo: ""
+    footer: "ShopCo · Proyecto Final Bases de Datos · 2025"
+execute:
+  echo: true
+---
+
+## {background-color="#0d1117" .center}
+
+<div style="text-align:center; padding-top:60px">
+<div style="font-size:3.2em; font-weight:900; color:#e8b84b; letter-spacing:-1px">ShopCo</div>
+<div style="font-size:1.4em; color:#adb5bd; margin-top:8px">E-Commerce Colombia</div>
+<hr style="border-color:#1a3a5c; margin:28px auto; width:200px">
+<div style="font-size:1.6em; font-weight:700; color:#f8f9fa">Optimización del Sistema de Bases de Datos</div>
+<div style="font-size:1em; color:#6c757d; margin-top:12px">De 2 tablas sin constraints · a 10 tablas en producción · en la nube</div>
+<div style="margin-top:40px; display:flex; justify-content:center; gap:40px">
+<div style="background:#1a2d40; border:1px solid #1a3a5c; border-radius:10px; padding:14px 28px">
+<div style="color:#e8b84b; font-size:1.6em; font-weight:800">$18.5M</div>
+<div style="color:#adb5bd; font-size:0.8em">Revenue real (Supabase)</div>
+</div>
+<div style="background:#1a2d40; border:1px solid #1a3a5c; border-radius:10px; padding:14px 28px">
+<div style="color:#2d9a4e; font-size:1.6em; font-weight:800">49.6%</div>
+<div style="color:#adb5bd; font-size:0.8em">ROI mes 1</div>
+</div>
+<div style="background:#1a2d40; border:1px solid #1a3a5c; border-radius:10px; padding:14px 28px">
+<div style="color:#c0392b; font-size:1.6em; font-weight:800">$237M</div>
+<div style="color:#adb5bd; font-size:0.8em">Pérdida en 3 años (AS-IS)</div>
+</div>
+</div>
+</div>
+
+---
+
+## El problema {background-color="#1a0a0a"}
+
+:::: {.columns}
+::: {.column width="52%"}
+
+### ShopCo: 3 años corriendo con esto
+
+```sql
+-- Base de datos ORIGINAL (AS-IS)
+CREATE TABLE ventas (
+  id            SERIAL PRIMARY KEY,
+  cliente_email VARCHAR(200),  -- sin UNIQUE
+  producto_nombre VARCHAR(200),-- texto libre
+  precio        NUMERIC,       -- acepta negativos
+  cantidad      INTEGER,       -- acepta 0
+  estado        VARCHAR(50),   -- texto libre
+  fecha_venta   TIMESTAMP
+);
+
+CREATE TABLE productos (
+  id     SERIAL PRIMARY KEY,
+  precio NUMERIC,   -- sin validación
+  stock  INTEGER    -- puede ser negativo
+);
+-- 0 foreign keys · 0 constraints · 0 analytics
+```
+
+:::
+::: {.column width="48%"}
+
+### Errores encontrados en producción
+
+<div style="display:grid; gap:8px; margin-top:8px">
+<div style="background:#3d0000; border-left:3px solid #c0392b; padding:8px 12px; border-radius:4px; font-size:0.88em">
+❌ Samsung A54 con <strong>stock = -3</strong> → 3 pedidos despachados sin producto
+</div>
+<div style="background:#3d0000; border-left:3px solid #c0392b; padding:8px 12px; border-radius:4px; font-size:0.88em">
+❌ Venta registrada con <strong>precio = -$449.000</strong>
+</div>
+<div style="background:#3d0000; border-left:3px solid #c0392b; padding:8px 12px; border-radius:4px; font-size:0.88em">
+❌ Estado "enviado" / "Enviado" / "en camino" → mismo estado, 3 formas distintas
+</div>
+<div style="background:#3d0000; border-left:3px solid #c0392b; padding:8px 12px; border-radius:4px; font-size:0.88em">
+❌ Sin tabla de pagos → no se sabe si un pedido fue cobrado
+</div>
+</div>
+
+<div style="margin-top:16px; background:#1a0e00; border:1px solid #e8b84b; border-radius:8px; padding:12px 16px">
+<div style="color:#e8b84b; font-weight:700; font-size:0.9em">PÉRDIDA MENSUAL CUANTIFICADA</div>
+<div style="display:flex; justify-content:space-between; margin-top:8px">
+<div style="text-align:center"><div style="color:#c0392b; font-size:1.3em; font-weight:800">$3.6M</div><div style="color:#6c757d; font-size:0.7em">Stock negativo</div></div>
+<div style="text-align:center"><div style="color:#c0392b; font-size:1.3em; font-weight:800">$1.4M</div><div style="color:#6c757d; font-size:0.7em">Pagos sin confirmar</div></div>
+<div style="text-align:center"><div style="color:#c0392b; font-size:1.3em; font-weight:800">$1.6M</div><div style="color:#6c757d; font-size:0.7em">Excel manual + duplic.</div></div>
+<div style="text-align:center"><div style="color:#e8b84b; font-size:1.3em; font-weight:800">$79M/año</div><div style="color:#6c757d; font-size:0.7em">Total anual</div></div>
+</div>
+</div>
+
+:::
+::::
+
+---
+
+## Nuestra propuesta {background-color="#0d1117" .center}
+
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; margin-top:20px">
+
+<div style="background:linear-gradient(135deg,#0d2137,#1a3a5c); border:1px solid #2a5a8c; border-radius:12px; padding:24px; text-align:center">
+<div style="font-size:2.2em">🗄️</div>
+<div style="color:#5ba4f5; font-size:1.1em; font-weight:700; margin:8px 0">SQL Robusto</div>
+<div style="color:#adb5bd; font-size:0.85em">10 tablas · 3FN<br>24 constraints<br>3 vistas · 1 SP · 3 funciones<br>8 índices</div>
+<div style="margin-top:12px; color:#e8b84b; font-weight:700">✓ En producción</div>
+<div style="color:#6c757d; font-size:0.78em">Supabase PostgreSQL 17</div>
+</div>
+
+<div style="background:linear-gradient(135deg,#0d2e14,#1a5c2a); border:1px solid #2a8c3a; border-radius:12px; padding:24px; text-align:center">
+<div style="font-size:2.2em">🍃</div>
+<div style="color:#69db7c; font-size:1.1em; font-weight:700; margin:8px 0">NoSQL Complementario</div>
+<div style="color:#adb5bd; font-size:0.85em">MongoDB Atlas<br>3 colecciones<br>5 aggregation pipelines<br>TTL automático</div>
+<div style="margin-top:12px; color:#e8b84b; font-weight:700">✓ Diseñado e integrado</div>
+<div style="color:#6c757d; font-size:0.78em">Catálogo · Sesiones · Carritos</div>
+</div>
+
+<div style="background:linear-gradient(135deg,#2e1a00,#5c3a0d); border:1px solid #8c5a1a; border-radius:12px; padding:24px; text-align:center">
+<div style="font-size:2.2em">☁️</div>
+<div style="color:#ffa94d; font-size:1.1em; font-weight:700; margin:8px 0">Arquitectura Cloud</div>
+<div style="color:#adb5bd; font-size:0.85em">AWS Serverless<br>Lambda · S3 · CloudFront<br>IAM · Secrets Manager<br>CloudWatch</div>
+<div style="margin-top:12px; color:#e8b84b; font-weight:700">$684K COP/mes</div>
+<div style="color:#6c757d; font-size:0.78em">vs $84K del VPS original</div>
+</div>
+
+</div>
+
+---
+
+## BD Relacional: ER y Reglas de Negocio {background-color="#0d1117"}
+
+:::: {.columns}
+::: {.column width="56%"}
+
+<div style="font-size:0.78em; background:#0d1f0d; border:1px solid #2a5a2a; border-radius:8px; padding:14px">
+
+```
+CATEGORIA ──► PRODUCTO ──► INVENTARIO
+(jerarquía     (10 SKUs)    (1:1, stock
+recursiva)                   con alerta)
+                  │
+              DETALLE_PEDIDO ◄──────────┐
+                  │                     │
+CLIENTE ──► PEDIDO ──► PAGO (1:1)       │
+   │            └──► ENVIO (1:1)        │
+   └──► RESENA ◄────────────────────────┘
+```
+
+**10 tablas · Normalización 3FN**
+
+</div>
+
+<div style="margin-top:12px; font-size:0.82em">
+
+| Tipo | Cantidad | Ejemplo destacado |
+|------|----------|-------------------|
+| CHECK | 10 | `precio_venta ≥ precio_costo` |
+| UNIQUE | 7 | `email` · `sku` · `1 pago/pedido` |
+| FOREIGN KEY | 5 | Integridad referencial total |
+| ENUM | 4 | Estados de pedido/pago/envío |
+
+</div>
+
+:::
+::: {.column width="44%"}
+
+### Constraint estrella
+
+<div style="background:#0d1f0d; border-left:4px solid #2d9a4e; padding:14px; border-radius:6px; margin-bottom:12px">
+
+```sql
+-- Garantiza margen positivo en
+-- TODA venta registrada
+CONSTRAINT ck_precio_venta_mayor_costo
+CHECK (precio_venta >= precio_costo)
+```
+
+<div style="color:#69db7c; font-size:0.82em; margin-top:8px">
+✓ Elimina ventas a pérdida desde la BD
+</div>
+</div>
+
+### Stored procedure en producción
+
+<div style="background:#1a1a00; border-left:4px solid #e8b84b; padding:12px; border-radius:6px; font-size:0.82em">
+<code>sp_procesar_pedido()</code> ejecutado el 21 mayo:<br>
+→ Creó pedido #11 para Valentina Ríos<br>
+→ Decrementó stock Samsung A54: 48 → 44<br>
+→ Registró pago Nequi $1.199.000<br>
+→ Todo en una sola transacción atómica
+</div>
+
+:::
+::::
+
+---
+
+## SQL en Producción {background-color="#0d1117"}
+
+:::: {.columns}
+::: {.column width="50%"}
+
+### 8 scripts ejecutados sin errores ✓
+
+<div style="font-size:0.82em">
+
+| Script | Contenido |
+|--------|-----------|
+| `01_ddl.sql` | CREATE + 8 índices |
+| `02_dml.sql` | INSERT · UPDATE · DELETE |
+| `03_joins.sql` | 4 JOINs + 3 subconsultas |
+| `04_agregaciones.sql` | GROUP BY · HAVING |
+| `05_window.sql` | RANK · LAG · PERCENT_RANK |
+| `06_vistas.sql` | 3 vistas analíticas |
+| `07_sp.sql` | `sp_procesar_pedido` |
+| `08_func.sql` | 3 funciones de negocio |
+
+</div>
+
+:::
+::: {.column width="50%"}
+
+### Función de segmentación real
+
+```sql
+SELECT fn_cliente_segmento(cliente_id)
+FROM cliente WHERE activo = TRUE;
+```
+
+<div style="background:#0a1628; border-radius:6px; padding:10px; font-size:0.82em; margin-top:8px; font-family:monospace">
+<span style="color:#69db7c">Valentina Ríos</span>  →  <span style="color:#e8b84b">Platinum</span><br>
+<span style="color:#69db7c">Sebastián Morales</span>  →  <span style="color:#5ba4f5">Gold</span><br>
+<span style="color:#69db7c">Daniela Castro</span>  →  <span style="color:#5ba4f5">Gold</span><br>
+<span style="color:#69db7c">Nicolás Pérez</span>  →  <span style="color:#5ba4f5">Gold</span><br>
+<span style="color:#69db7c">Laura Vargas</span>  →  <span style="color:#adb5bd">Silver</span><br>
+<span style="color:#69db7c">Andrés Gutiérrez</span>  →  <span style="color:#cd6133">Bronze</span>
+</div>
+
+### Vista de inventario crítico
+
+```sql
+SELECT * FROM vista_inventario_critico;
+-- Bicicleta MTB Trek: stock=4, mínimo=2
+-- ⚠️ Reabastecimiento urgente
+```
+
+:::
+::::
+
+---
+
+## NoSQL + Cloud {background-color="#0d1117"}
+
+:::: {.columns}
+::: {.column width="48%"}
+
+### MongoDB Atlas — 3 colecciones
+
+<div style="display:grid; gap:8px; font-size:0.83em">
+<div style="background:#0d1f2e; border-left:3px solid #5ba4f5; padding:10px 12px; border-radius:5px">
+<strong style="color:#5ba4f5">catalogo_productos</strong><br>
+<span style="color:#adb5bd">Enriquece PostgreSQL: imágenes, tags, specs técnicas, historial de precios. <code>_id</code> = <code>producto_id</code> de Supabase.</span>
+</div>
+<div style="background:#0d1f2e; border-left:3px solid #69db7c; padding:10px 12px; border-radius:5px">
+<strong style="color:#69db7c">sesiones_usuario</strong><br>
+<span style="color:#adb5bd">Eventos en tiempo real: vistas, búsquedas, clics. TTL 90 días. Soporta usuarios anónimos.</span>
+</div>
+<div style="background:#0d1f2e; border-left:3px solid #ffa94d; padding:10px 12px; border-radius:5px">
+<strong style="color:#ffa94d">carritos_abandonados</strong><br>
+<span style="color:#adb5bd">Remarketing: TTL 30 días en recuperados. Stock se consulta en vivo desde PostgreSQL.</span>
+</div>
+</div>
+
+:::
+::: {.column width="52%"}
+
+### Arquitectura AWS — us-east-1
+
+```
+Internet → CloudFront (CDN)
+               ↓
+         API Gateway + JWT
+               ↓
+     Lambda (Node.js 20)
+      /              \
+ Supabase        MongoDB Atlas
+ PostgreSQL       Catálogo/Eventos
+      \              /
+       S3 (imágenes, backups)
+               ↓
+  Secrets Manager · IAM · CloudWatch
+```
+
+<div style="display:flex; gap:10px; margin-top:10px; font-size:0.8em">
+<div style="background:#1a1400; border:1px solid #e8b84b; border-radius:6px; padding:6px 10px; text-align:center">
+<div style="color:#e8b84b; font-weight:700">$684K COP</div>
+<div style="color:#6c757d">infra/mes c/ IVA</div>
+</div>
+<div style="background:#0d1a0d; border:1px solid #2d9a4e; border-radius:6px; padding:6px 10px; text-align:center">
+<div style="color:#2d9a4e; font-weight:700">Serverless</div>
+<div style="color:#6c757d">escala automático</div>
+</div>
+<div style="background:#1a0d0d; border:1px solid #c0392b; border-radius:6px; padding:6px 10px; text-align:center">
+<div style="color:#c0392b; font-weight:700">vs VPS único</div>
+<div style="color:#6c757d">sin backups antes</div>
+</div>
+</div>
+
+:::
+::::
+
+---
+
+## Análisis de Resultados {background-color="#0d1117"}
+
+### Datos reales de Supabase · Ejecutado en producción
+
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:14px">
+
+<div style="background:#0d1f2e; border:1px solid #1a3a5c; border-radius:10px; padding:16px">
+<div style="color:#5ba4f5; font-size:0.82em; font-weight:700; margin-bottom:8px">📊 REVENUE POR CATEGORÍA</div>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+<span style="font-size:0.8em; color:#adb5bd">Electrónica</span>
+<span style="font-weight:700; color:#e8b84b">$16.4M</span>
+</div>
+<div style="background:#1a3a5c; height:8px; border-radius:4px; margin-bottom:10px">
+<div style="background:#e8b84b; height:8px; border-radius:4px; width:80%"></div>
+</div>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+<span style="font-size:0.8em; color:#adb5bd">Ropa y Moda</span>
+<span style="font-weight:700; color:#5ba4f5">$2.2M</span>
+</div>
+<div style="background:#1a3a5c; height:8px; border-radius:4px; margin-bottom:10px">
+<div style="background:#5ba4f5; height:8px; border-radius:4px; width:13%"></div>
+</div>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+<span style="font-size:0.8em; color:#adb5bd">Deportes</span>
+<span style="font-weight:700; color:#69db7c">$1.9M</span>
+</div>
+<div style="background:#1a3a5c; height:8px; border-radius:4px">
+<div style="background:#69db7c; height:8px; border-radius:4px; width:10%"></div>
+</div>
+<div style="margin-top:10px; color:#6c757d; font-size:0.75em">Electrónica = 80 % del revenue total</div>
+</div>
+
+<div style="background:#0d1f2e; border:1px solid #1a3a5c; border-radius:10px; padding:16px">
+<div style="color:#ffa94d; font-size:0.82em; font-weight:700; margin-bottom:8px">👑 CLIENTES MÁS VALIOSOS</div>
+<div style="display:grid; gap:6px">
+<div style="display:flex; justify-content:space-between; background:#1a2d40; padding:5px 8px; border-radius:4px">
+<span style="font-size:0.78em">Valentina Ríos</span>
+<span style="color:#e8b84b; font-size:0.78em; font-weight:700">$7.6M · Platinum</span>
+</div>
+<div style="display:flex; justify-content:space-between; background:#1a2d40; padding:5px 8px; border-radius:4px">
+<span style="font-size:0.78em">Sebastián Morales</span>
+<span style="color:#5ba4f5; font-size:0.78em; font-weight:700">$3.8M · Gold</span>
+</div>
+<div style="display:flex; justify-content:space-between; background:#1a2d40; padding:5px 8px; border-radius:4px">
+<span style="font-size:0.78em">Daniela Castro</span>
+<span style="color:#5ba4f5; font-size:0.78em; font-weight:700">$2.5M · Gold</span>
+</div>
+</div>
+<div style="margin-top:10px; background:#1a1400; border-radius:4px; padding:6px 8px; font-size:0.76em">
+<span style="color:#e8b84b">⚡ 1 cliente = 41% del revenue total</span><br>
+<span style="color:#6c757d">83% compraron solo 1 vez → retención</span>
+</div>
+</div>
+
+<div style="background:#0d1f2e; border:1px solid #1a3a5c; border-radius:10px; padding:16px">
+<div style="color:#69db7c; font-size:0.82em; font-weight:700; margin-bottom:8px">🏆 MÉTRICAS CLAVE</div>
+<div style="display:grid; gap:7px">
+<div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #1a2d40">
+<span style="font-size:0.78em; color:#adb5bd">PSE aprobación</span>
+<span style="color:#2d9a4e; font-weight:700">100%</span>
+</div>
+<div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #1a2d40">
+<span style="font-size:0.78em; color:#adb5bd">NPS implícito</span>
+<span style="color:#2d9a4e; font-weight:700">4.8 / 5 ⭐</span>
+</div>
+<div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #1a2d40">
+<span style="font-size:0.78em; color:#adb5bd">Servientrega entrega</span>
+<span style="color:#2d9a4e; font-weight:700">100% · 2 días</span>
+</div>
+<div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #1a2d40">
+<span style="font-size:0.78em; color:#adb5bd">Mayor margen</span>
+<span style="color:#e8b84b; font-weight:700">Bicicleta 36.8%</span>
+</div>
+<div style="display:flex; justify-content:space-between; padding:4px 0">
+<span style="font-size:0.78em; color:#adb5bd">Stock crítico</span>
+<span style="color:#c0392b; font-weight:700">4 uds ⚠️</span>
+</div>
+</div>
+</div>
+
+</div>
+
+---
+
+## ROI e Impacto Financiero {background-color="#0d1117"}
+
+:::: {.columns}
+::: {.column width="55%"}
+
+### ¿Vale la inversión?
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px">
+<div style="background:#1a0e00; border:1px solid #e8b84b; border-radius:8px; padding:12px; text-align:center">
+<div style="color:#6c757d; font-size:0.75em">Inversión inicial</div>
+<div style="color:#e8b84b; font-size:1.8em; font-weight:800">$97.2M</div>
+<div style="color:#6c757d; font-size:0.72em">COP (desarrollo + setup)</div>
+</div>
+<div style="background:#0d1a0d; border:1px solid #2d9a4e; border-radius:8px; padding:12px; text-align:center">
+<div style="color:#6c757d; font-size:0.75em">Beneficio neto/mes</div>
+<div style="color:#2d9a4e; font-size:1.8em; font-weight:800">$145.5M</div>
+<div style="color:#6c757d; font-size:0.72em">COP (escenario base)</div>
+</div>
+</div>
+
+| Escenario | Revenue/mes | ROI mes 1 | Break-even |
+|-----------|-------------|-----------|------------|
+| **Base** (500 ped.) | $175M | **+49.6%** | Mes 1 |
+| **Optimista** (750) | $262.5M | **+138.6%** | Mes 1 |
+| **Pesimista** (200) | $70M | +24.8% | Mes 3 |
+
+:::
+::: {.column width="45%"}
+
+### Ahorro generado por la optimización
+
+<div style="display:grid; gap:8px; font-size:0.85em">
+<div style="background:#0d1a0d; border-left:3px solid #2d9a4e; padding:10px 12px; border-radius:5px">
+<div style="display:flex; justify-content:space-between">
+<span>Pérdidas eliminadas</span>
+<span style="color:#2d9a4e; font-weight:700">+$6.6M/mes</span>
+</div>
+<span style="color:#6c757d; font-size:0.8em">Stock · pagos · reconciliación manual</span>
+</div>
+<div style="background:#0d1a0d; border-left:3px solid #2d9a4e; padding:10px 12px; border-radius:5px">
+<div style="display:flex; justify-content:space-between">
+<span>Ahorro anual</span>
+<span style="color:#2d9a4e; font-weight:700">$79.2M/año</span>
+</div>
+</div>
+<div style="background:#1a1400; border-left:3px solid #e8b84b; padding:10px 12px; border-radius:5px">
+<div style="display:flex; justify-content:space-between">
+<span>Infra cloud total</span>
+<span style="color:#e8b84b; font-weight:700">$684K/mes</span>
+</div>
+<span style="color:#6c757d; font-size:0.8em">Con IVA 19% · vs $84K VPS anterior</span>
+</div>
+</div>
+
+<div style="margin-top:12px; background:#0d1a0d; border:1px solid #2d9a4e; border-radius:8px; padding:12px; text-align:center">
+<div style="color:#2d9a4e; font-size:0.85em">La inversión se recupera completamente</div>
+<div style="color:#f8f9fa; font-size:1.4em; font-weight:800">en el primer mes de operación</div>
+</div>
+
+:::
+::::
+
+---
+
+## Legal, Ético y Roadmap {background-color="#0d1117"}
+
+:::: {.columns}
+::: {.column width="48%"}
+
+### Marco normativo aplicado
+
+<div style="font-size:0.83em">
+
+| Norma | Aplicación |
+|-------|-----------|
+| **Ley 1581/2012** 🇨🇴 | Datos personales — consentimiento, finalidad, retención |
+| **PCI DSS v4.0** | Pagos con tarjeta — SAQ A, sin almacenar números |
+| **GDPR** 🇪🇺 | Expansión a UE — derecho al olvido, privacy by design |
+| **ISO 27001** | Seguridad — IAM, Secrets Manager, logs auditables |
+| **OWASP Top 10** | Queries parametrizadas, sin SQL injection |
+
+</div>
+
+<div style="background:#0d1f2e; border-left:3px solid #5ba4f5; padding:10px 12px; border-radius:5px; font-size:0.82em; margin-top:10px">
+<strong>Dato personal más sensible:</strong> <code>pago.metodo</code> + <code>pago.referencia_externa</code><br>
+→ Procesado exclusivamente por pasarela certificada<br>
+→ ShopCo nunca toca números de tarjeta
+</div>
+
+:::
+::: {.column width="52%"}
+
+### Roadmap de implementación
+
+<div style="display:grid; gap:8px; font-size:0.83em">
+<div style="display:flex; align-items:center; gap:10px; background:#0d1a0d; padding:9px 12px; border-radius:6px">
+<span style="color:#2d9a4e; font-size:1.1em">✅</span>
+<div><strong>Fase 0 — Completado</strong><br><span style="color:#6c757d">BD SQL + NoSQL + Análisis + Cloud design</span></div>
+</div>
+<div style="display:flex; align-items:center; gap:10px; background:#1a1400; padding:9px 12px; border-radius:6px">
+<span style="color:#e8b84b; font-size:1.1em">→</span>
+<div><strong>Fase 1 — 30 días</strong><br><span style="color:#6c757d">Deploy Lambda + API Gateway + pasarelas</span></div>
+</div>
+<div style="display:flex; align-items:center; gap:10px; background:#1a1400; padding:9px 12px; border-radius:6px">
+<span style="color:#e8b84b; font-size:1.1em">→</span>
+<div><strong>Fase 2 — 60 días</strong><br><span style="color:#6c757d">Dashboard real-time + programa Platinum</span></div>
+</div>
+<div style="display:flex; align-items:center; gap:10px; background:#1a1400; padding:9px 12px; border-radius:6px">
+<span style="color:#e8b84b; font-size:1.1em">→</span>
+<div><strong>Fase 3 — 6 meses</strong><br><span style="color:#6c757d">Motor de recomendaciones ML</span></div>
+</div>
+</div>
+
+:::
+::::
+
+---
+
+## {background-color="#0d1117" .center}
+
+<div style="text-align:center; padding-top:40px">
+<div style="font-size:2.2em; font-weight:900; color:#e8b84b">De $237M en pérdidas</div>
+<div style="font-size:2.2em; font-weight:900; color:#f8f9fa; margin-top:4px">a ROI positivo en el mes 1</div>
+
+<hr style="border-color:#1a3a5c; margin:28px auto; width:300px">
+
+<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; max-width:900px; margin:0 auto">
+<div style="background:#0d1f2e; border:1px solid #1a3a5c; border-radius:10px; padding:16px">
+<div style="color:#e8b84b; font-size:1.5em; font-weight:800">10</div>
+<div style="color:#adb5bd; font-size:0.8em">Tablas en 3FN</div>
+</div>
+<div style="background:#0d1f2e; border:1px solid #1a3a5c; border-radius:10px; padding:16px">
+<div style="color:#e8b84b; font-size:1.5em; font-weight:800">24</div>
+<div style="color:#adb5bd; font-size:0.8em">Reglas de negocio</div>
+</div>
+<div style="background:#0d1f2e; border:1px solid #1a3a5c; border-radius:10px; padding:16px">
+<div style="color:#e8b84b; font-size:1.5em; font-weight:800">3</div>
+<div style="color:#adb5bd; font-size:0.8em">Colecciones NoSQL</div>
+</div>
+<div style="background:#0d1f2e; border:1px solid #1a3a5c; border-radius:10px; padding:16px">
+<div style="color:#2d9a4e; font-size:1.5em; font-weight:800">49.6%</div>
+<div style="color:#adb5bd; font-size:0.8em">ROI mes 1</div>
+</div>
+</div>
+
+<div style="margin-top:32px; font-size:1.15em; color:#adb5bd">
+ShopCo tiene los datos, la arquitectura y el análisis para escalar.<br>
+<strong style="color:#f8f9fa">Solo falta ejecutar.</strong>
+</div>
+
+<div style="margin-top:24px; font-size:0.9em; color:#495057">
+Proyecto Final · Bases de Datos · 2025 &nbsp;|&nbsp;
+<span style="color:#5ba4f5">github.com/julianjimenez4809-ui/proyecto-final-bases-datos</span>
+</div>
+</div>
