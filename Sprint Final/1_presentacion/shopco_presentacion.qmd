@@ -511,7 +511,7 @@ De $237M en pérdidas
 a ROI positivo en el mes 1
 :::
 
----
+<hr class="closing-hr">
 
 ::: {.closing-metrics}
 ::: {.c-metric}

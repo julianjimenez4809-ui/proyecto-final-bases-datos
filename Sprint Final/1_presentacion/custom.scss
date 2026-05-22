@@ -11,23 +11,42 @@ $presentation-heading-font-weight: 700;
 
 /* ── BASE ─────────────────────────────── */
 .reveal { font-size: 0.9em; }
-.reveal .slides section { padding: 10px 40px !important; overflow: hidden; }
+
+/* Centrado y contención de todas las slides */
+.reveal .slides { text-align: left; }
+.reveal .slides section {
+  padding: 14px 48px !important;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Slides de nivel 1 (cover y closing) — centrado total */
+.reveal .slides section.level1 {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
 .reveal h2 {
-  font-size: 1.55em; font-weight: 800; color: #f8f9fa;
+  font-size: 1.5em; font-weight: 800; color: #f8f9fa;
   border-bottom: 2px solid #1a3a5c; padding-bottom: 8px;
   margin-bottom: 16px; text-transform: none; letter-spacing: -0.3px;
 }
-.reveal h3 { font-size: 1em; color: #e8b84b; text-transform: none; margin: 12px 0 8px; }
+.reveal h3 { font-size: 0.98em; color: #e8b84b; text-transform: none; margin: 10px 0 7px; }
 .reveal .progress { color: #e8b84b; height: 4px; }
 .reveal .slide-number { background: #1a2d40; color: #6c757d; font-size: 0.7em; border-radius: 4px; padding: 2px 8px; }
 .reveal .footer { font-size: 0.62em; color: #495057; }
-.reveal table { font-size: 0.8em; width: 100%; border-collapse: collapse; }
-.reveal table th { background: #1a3a5c; color: #f8f9fa; padding: 6px 10px; text-align: left; font-weight: 600; }
-.reveal table td { padding: 5px 10px; border-bottom: 1px solid #1a2d40; color: #ced4da; }
+.reveal table { font-size: 0.78em; width: 100%; border-collapse: collapse; }
+.reveal table th { background: #1a3a5c; color: #f8f9fa; padding: 5px 9px; text-align: left; font-weight: 600; }
+.reveal table td { padding: 4px 9px; border-bottom: 1px solid #1a2d40; color: #ced4da; }
 .reveal table tr:nth-child(even) td { background: #0d1f2e; }
-.reveal pre { width: 100%; background: #0d1117 !important; border: 1px solid #1a3a5c; border-radius: 6px; padding: 12px !important; font-size: 0.78em; margin: 6px 0 !important; }
+.reveal pre { width: 100%; background: #0d1117 !important; border: 1px solid #1a3a5c; border-radius: 6px; padding: 11px !important; font-size: 0.76em; margin: 5px 0 !important; }
 .reveal code { font-family: "JetBrains Mono", monospace; color: #69db7c; font-size: 0.86em; }
-.reveal .columns { gap: 16px; }
+.reveal .columns { gap: 14px; width: 100%; }
+.reveal .column { min-width: 0; overflow: hidden; }
 
 /* ── COVER SLIDE ──────────────────────── */
 .cover-slide { text-align: center; width: 100%; }
@@ -122,14 +141,25 @@ $presentation-heading-font-weight: 700;
 .roadmap-item.next { background: #1a1400; border-left: 3px solid #e8b84b; }
 
 /* ── CLOSING SLIDE ───────────────────── */
-.closing { text-align: center; width: 100%; }
-.closing-title { font-size: 2.2em; font-weight: 900; color: #e8b84b; line-height: 1.2; }
-.closing-title2 { font-size: 2.2em; font-weight: 900; color: #f8f9fa; }
-.closing hr { border: none; border-top: 2px solid #1a3a5c; width: 300px; margin: 20px auto; }
-.closing-metrics { display: flex; justify-content: center; gap: 20px; margin: 16px 0; }
-.c-metric { background: #0d1f2e; border: 1px solid #1a3a5c; border-radius: 10px; padding: 14px 22px; text-align: center; font-size: 0.78em; color: #adb5bd; }
-.c-num { font-size: 1.6em; font-weight: 800; color: #e8b84b; display: block; }
-.c-num-green { font-size: 1.6em; font-weight: 800; color: #2d9a4e; display: block; }
-.closing-cta { font-size: 1em; color: #adb5bd; margin: 16px 0 8px; }
+.closing {
+  text-align: center; width: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.closing-title { font-size: 2.1em; font-weight: 900; color: #e8b84b; line-height: 1.2; }
+.closing-title2 { font-size: 2.1em; font-weight: 900; color: #f8f9fa; margin-bottom: 4px; }
+.closing-hr { border: none; border-top: 2px solid #1a3a5c; width: 280px; margin: 18px auto; }
+.closing-metrics {
+  display: flex; justify-content: center; gap: 16px; margin: 14px 0;
+  flex-wrap: wrap;
+}
+.c-metric {
+  background: #0d1f2e; border: 1px solid #1a3a5c; border-radius: 10px;
+  padding: 12px 20px; text-align: center; font-size: 0.76em; color: #adb5bd;
+  min-width: 110px;
+}
+.c-num { font-size: 1.5em; font-weight: 800; color: #e8b84b; display: block; }
+.c-num-green { font-size: 1.5em; font-weight: 800; color: #2d9a4e; display: block; }
+.closing-cta { font-size: 0.95em; color: #adb5bd; margin: 14px 0 6px; max-width: 700px; }
 .closing-cta strong { color: #f8f9fa; }
-.closing-link { font-size: 0.78em; color: #5ba4f5; }
+.closing-link { font-size: 0.76em; color: #5ba4f5; }
