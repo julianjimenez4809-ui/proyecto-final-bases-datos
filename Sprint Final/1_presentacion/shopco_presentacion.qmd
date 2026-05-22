@@ -1,11 +1,9 @@
 ---
-title: "ShopCo E-Commerce"
-subtitle: "Propuesta de Optimización de Base de Datos"
-author: "Equipo ShopCo · Proyecto Final Bases de Datos"
-date: "Noviembre 2025"
+pagetitle: "ShopCo — Proyecto Final Bases de Datos"
 format:
   revealjs:
     theme: [dark, custom.scss]
+    embed-resources: true
     slide-number: true
     progress: true
     transition: slide
