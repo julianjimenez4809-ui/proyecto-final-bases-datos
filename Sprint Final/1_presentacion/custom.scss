@@ -40,6 +40,16 @@ $presentation-heading-font-weight: 700;
 .reveal pre  { width:100%; background:#0d1117 !important; border:1px solid #1a3a5c; border-radius:6px; padding:10px !important; font-size:0.73em; margin:5px 0 !important; }
 .reveal code { font-family:"JetBrains Mono",monospace; color:#69db7c; font-size:0.84em; }
 
+/* ── CENTRADO MANUAL (para cover y closing con center:false) ── */
+.reveal .slides section.center-slide {
+  display:flex !important; flex-direction:column !important;
+  align-items:center !important; justify-content:center !important;
+  text-align:center !important; height:100% !important;
+}
+
+/* Columnas alineadas arriba por defecto */
+.reveal .columns { align-items: flex-start !important; }
+
 /* ── COVER ────────────────────────────────────────────── */
 .reveal .slides section.cover {
   display:flex !important; flex-direction:column !important;

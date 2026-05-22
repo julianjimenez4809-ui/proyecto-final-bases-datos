@@ -13,12 +13,12 @@ format:
     width: 1280
     height: 720
     margin: 0.04
-    center: true
+    center: false
     logo: ""
     footer: "ShopCo · Proyecto Final Bases de Datos · 2026"
 ---
 
-## {background-color="#0d1117" .cover}
+## {background-color="#0d1117" .cover .center-slide}
 
 ::: {.cover-brand}
 ShopCo
@@ -176,11 +176,21 @@ us-east-1 — misma región
 
 ## ER y Reglas de Negocio {background-color="#0d1117"}
 
-::: {.columns}
+::: {.columns style="align-items:flex-start"}
 ::: {.column width="55%"}
 
-<div style="overflow:hidden;border-radius:8px;border:1px solid #1a3a5c;max-height:500px">
-![](../3_modelo_er/er_shopco.svg){width="100%"}
+<img src="../3_modelo_er/er_shopco.svg"
+     style="width:100%;display:block;border-radius:8px;border:1px solid #1a3a5c;
+            object-fit:contain;object-position:top center;max-height:470px"/>
+
+<div style="margin-top:8px;text-align:center">
+<a href="https://supabase.com/dashboard/project/ilffqbpgbdjnqybcxeep/database/tables"
+   target="_blank"
+   style="font-size:0.7em;color:#5ba4f5;text-decoration:none;
+          background:#0d1f2e;padding:4px 12px;border-radius:4px;
+          border:1px solid #1a3a5c">
+  🔗 Ver esquema en Supabase →
+</a>
 </div>
 
 :::
@@ -577,7 +587,7 @@ Expansión catálogo + nuevas categorías
 
 ---
 
-## {background-color="#0d1117" .closing-slide}
+## {background-color="#0d1117" .closing-slide .center-slide}
 
 ::: {.closing-content}
 ::: {.cl-title}
