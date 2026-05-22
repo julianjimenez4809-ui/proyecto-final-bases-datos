@@ -12,102 +12,101 @@ format:
     highlight-style: github-dark
     width: 1280
     height: 720
-    margin: 0.06
-    center: true
+    margin: 0.05
+    center: false
     logo: ""
-    footer: "ShopCo · Proyecto Final Bases de Datos · 2025"
+    footer: "ShopCo · Proyecto Final Bases de Datos · 2026"
 ---
 
-# {background-color="#0d1117"}
+## {background-color="#0d1117" .cover}
 
-::: {.cover-slide}
 ::: {.cover-brand}
 ShopCo
 :::
 ::: {.cover-sub}
 E-Commerce Colombia
 :::
-
----
-
+::: {.cover-divider}
+:::
 ::: {.cover-title}
 Optimización del Sistema de Bases de Datos
 :::
 ::: {.cover-desc}
 De 2 tablas sin constraints · a 10 tablas en producción · en la nube
 :::
-
 ::: {.cover-metrics}
 ::: {.metric-box}
-[$18.5M]{.metric-num-gold}
-
-Revenue real (Supabase)
+[$18.5M]{.mn-gold}
+Revenue real
 :::
 ::: {.metric-box}
-[49.6%]{.metric-num-green}
-
+[49.6%]{.mn-green}
 ROI mes 1
 :::
 ::: {.metric-box}
-[$237M]{.metric-num-red}
-
-Pérdida en 3 años (AS-IS)
-:::
+[$237M]{.mn-red}
+Pérdida 3 años AS-IS
 :::
 :::
 
 ---
 
-## El problema {background-color="#110808"}
+## El Problema {background-color="#110808"}
 
 ::: {.columns}
-::: {.column width="52%"}
+::: {.column width="53%"}
 
-### ShopCo: 3 años corriendo con esto
+### ShopCo: 3 años con esta BD
 
 ```sql
--- Base de datos ORIGINAL
+-- BD ORIGINAL (2023–2026)
 CREATE TABLE ventas (
-  id       SERIAL PRIMARY KEY,
-  email    VARCHAR(200), -- sin UNIQUE
-  precio   NUMERIC,      -- acepta negativos
-  cantidad INTEGER,      -- acepta 0 o negativo
-  estado   VARCHAR(50)   -- texto libre sin validar
+  id      SERIAL PRIMARY KEY,
+  email   VARCHAR(200),  -- sin UNIQUE: emails duplicados
+  precio  NUMERIC,       -- sin CHECK: acepta negativos
+  cantidad INTEGER,      -- sin CHECK: acepta 0 o negativo
+  estado  VARCHAR(50)    -- sin ENUM: texto libre
 );
 CREATE TABLE productos (
   id    SERIAL PRIMARY KEY,
-  precio NUMERIC,  -- sin constraint
-  stock  INTEGER   -- puede ser negativo
-  -- 0 foreign keys · 0 constraints · 0 analytics
+  precio NUMERIC,        -- sin restricción
+  stock  INTEGER         -- podía llegar a -3
+  -- 0 FK · 0 constraints · 0 vistas · 0 analytics
 );
 ```
-
 :::
-::: {.column width="48%"}
+::: {.column width="47%"}
 
-### Errores reales en producción
+### Errores encontrados en producción
 
-::: {.error-box}
-❌ Samsung A54 con **stock = -3** → 3 pedidos despachados sin producto
+::: {.err-box}
+❌ Samsung A54 — **stock = −3** → 3 pedidos sin producto en bodega
 :::
-::: {.error-box}
-❌ Venta registrada con **precio = -$449.000**
+::: {.err-box}
+❌ Venta registrada con **precio = −$449.000** sin detección
 :::
-::: {.error-box}
-❌ "enviado" / "Enviado" / "en camino" → el mismo estado, 3 formas distintas
+::: {.err-box}
+❌ "enviado" / "Enviado" / "en camino" → mismo estado, imposible filtrar
 :::
-::: {.error-box}
-❌ Sin tabla de pagos → sin confirmar si un pedido fue cobrado
+::: {.err-box}
+❌ Sin tabla de pagos → pedidos cobrados y sin cobrar mezclados
 :::
 
-::: {.loss-box}
-**PÉRDIDA MENSUAL**
+::: {.loss-panel}
+**PÉRDIDA MENSUAL CUANTIFICADA**
 
-[$3.6M]{.loss-item} Stock negativo &nbsp;
-[$1.4M]{.loss-item} Pagos sin confirmar &nbsp;
-[$1.6M]{.loss-item} Excel manual
-
-[→ $79M/año]{.loss-total}
+::: {.loss-grid}
+::: {.loss-item-box}
+[$3.6M]{.loss-val} Stock negativo
+:::
+::: {.loss-item-box}
+[$1.4M]{.loss-val} Pagos sin confirmar
+:::
+::: {.loss-item-box}
+[$1.6M]{.loss-val} Reconciliación manual
+:::
+:::
+[→ **$79M pérdida anual** en 3 años sin optimizar]{.loss-total}
 :::
 
 :::
@@ -115,56 +114,49 @@ CREATE TABLE productos (
 
 ---
 
-## Nuestra propuesta {background-color="#0d1117"}
+## Nuestra Propuesta {background-color="#0d1117"}
 
-::: {.columns}
-::: {.column width="33%"}
-::: {.prop-card-blue}
+::: {.prop-grid}
+::: {.prop-card .card-blue}
 🗄️
 
 **SQL Robusto**
 
 10 tablas · 3FN
-24 constraints
-3 vistas · 1 SP · 3 funciones
-8 índices
+24 constraints verificables
+3 vistas analíticas
+1 stored procedure · 3 funciones
+8 índices de soporte
 
-[✓ En producción]{.badge-gold}
+[✓ En producción — Supabase]{.badge-gold}
+:::
 
-[Supabase PostgreSQL 17]{.badge-sub}
-:::
-:::
-::: {.column width="33%"}
-::: {.prop-card-green}
+::: {.prop-card .card-green}
 🍃
 
 **NoSQL Complementario**
 
-MongoDB Atlas
-3 colecciones
+MongoDB Atlas M10
+3 colecciones diseñadas
 5 aggregation pipelines
-TTL automático
+TTL automático (90/30 días)
+Integración por UUID con SQL
 
 [✓ Diseñado e integrado]{.badge-gold}
+:::
 
-[Catálogo · Sesiones · Carritos]{.badge-sub}
-:::
-:::
-::: {.column width="33%"}
-::: {.prop-card-orange}
+::: {.prop-card .card-orange}
 ☁️
 
-**Arquitectura Cloud**
+**Arquitectura Cloud AWS**
 
-AWS Serverless
-Lambda · S3 · CloudFront
-IAM · Secrets Manager
-CloudWatch
+Lambda + API Gateway
+Supabase + MongoDB Atlas
+S3 · CloudFront · IAM
+Secrets Manager · CloudWatch
+us-east-1 — misma región
 
-[$684K COP/mes]{.badge-gold}
-
-[vs $84K del VPS original]{.badge-sub}
-:::
+[$684K COP/mes con IVA]{.badge-gold}
 :::
 :::
 
@@ -173,34 +165,24 @@ CloudWatch
 ## ER y Reglas de Negocio {background-color="#0d1117"}
 
 ::: {.columns}
-::: {.column width="54%"}
+::: {.column width="50%"}
 
-::: {.schema-box}
-```
-CATEGORIA ──► PRODUCTO ──► INVENTARIO
-(recursiva)   (10 SKUs)    (1:1, alertas)
-                  │
-CLIENTE ──► PEDIDO ──► DETALLE_PEDIDO
-   │            ├──► PAGO   (1:1)
-   │            └──► ENVIO  (0..1)
-   └──► RESENA ◄────────────────────
-```
-**10 tablas · Normalización 3FN**
+![](../3_modelo_er/er_shopco.svg){width="100%" style="border-radius:8px; border:1px solid #1a3a5c;"}
+
 :::
+::: {.column width="50%"}
 
-| Tipo | Cant | Ejemplo |
-|------|------|---------|
+::: {.er-table}
+| Tipo | N° | Ejemplo clave |
+|------|:--:|---------------|
 | CHECK | 10 | `precio_venta ≥ precio_costo` |
-| UNIQUE | 7 | `email` · `sku` · `1 pago/pedido` |
+| UNIQUE | 7 | `email` · `sku` · 1 pago/pedido |
 | FK | 5 | Integridad referencial total |
 | ENUM | 4 | Estados pedido / pago / envío |
-
 :::
-::: {.column width="46%"}
 
-### Constraint estrella
-
-::: {.constraint-box}
+::: {.constraint-highlight}
+**Constraint estrella**
 ```sql
 CONSTRAINT ck_precio_venta_mayor_costo
   CHECK (precio_venta >= precio_costo)
@@ -208,13 +190,12 @@ CONSTRAINT ck_precio_venta_mayor_costo
 ✓ Elimina ventas a pérdida desde la BD
 :::
 
-### SP ejecutado en producción
+::: {.sp-highlight}
+**SP ejecutado en producción — 21 mayo 2026**
 
-::: {.sp-box}
-`sp_procesar_pedido()` — 21 mayo 2026:
-
+`sp_procesar_pedido()` →
 → Creó pedido #11 · Valentina Ríos
-→ Decrementó stock Samsung A54: 48 → 44
+→ Decrementó Samsung A54: 48 → 44 uds
 → Registró pago Nequi $1.199.000
 → **Transacción atómica** (todo o nada)
 :::
@@ -227,40 +208,46 @@ CONSTRAINT ck_precio_venta_mayor_costo
 ## SQL en Producción {background-color="#0d1117"}
 
 ::: {.columns}
-::: {.column width="50%"}
+::: {.column width="48%"}
 
-### 8 scripts ejecutados sin errores ✓
+### 8 scripts — todos verificados en Supabase ✓
 
-| Script | Contenido |
-|--------|-----------|
-| `01_ddl.sql` | CREATE TABLE + 8 índices |
-| `02_dml.sql` | INSERT · UPDATE · DELETE |
-| `03_joins.sql` | 4 JOINs + 3 subconsultas |
-| `04_agr.sql` | GROUP BY · HAVING |
-| `05_window.sql` | RANK · LAG · PERCENT_RANK |
-| `06_vistas.sql` | 3 vistas analíticas |
-| `07_sp.sql` | `sp_procesar_pedido` |
-| `08_func.sql` | 3 funciones de negocio |
+::: {.sql-table}
+| Script | Qué hace | Verificado |
+|--------|----------|:----------:|
+| `01_ddl.sql` | 10 tablas + 24 constraints + 8 índices | ✓ |
+| `02_dml.sql` | INSERT masivo · UPDATE estado · DELETE limpieza | ✓ |
+| `03_joins.sql` | 4 JOINs multi-tabla + 3 subconsultas correlacionadas | ✓ |
+| `04_agr.sql` | GROUP BY · HAVING · revenue por categoría | ✓ |
+| `05_window.sql` | RANK · ROW_NUMBER · LAG · PERCENT_RANK | ✓ |
+| `06_vistas.sql` | vista_pedidos / inventario_critico / performance | ✓ |
+| `07_sp.sql` | `sp_procesar_pedido` — ejecutado en producción | ✓ |
+| `08_func.sql` | `fn_total_pedido` · `fn_margen` · `fn_segmento` | ✓ |
+:::
 
 :::
-::: {.column width="50%"}
+::: {.column width="52%"}
 
-### Segmentación de clientes real
+### Segmentación real ejecutada en Supabase
 
 ```sql
-SELECT fn_cliente_segmento(cliente_id)
-FROM cliente WHERE activo = TRUE;
+SELECT c.nombre, fn_cliente_segmento(c.cliente_id)
+FROM cliente c WHERE activo = TRUE;
 ```
 
-::: {.seg-results}
-| Cliente | Segmento |
-|---------|----------|
-| Valentina Ríos | 🥇 **Platinum** |
-| Sebastián Morales | 🥈 Gold |
-| Daniela Castro | 🥈 Gold |
-| Nicolás Pérez | 🥈 Gold |
-| Laura Vargas | 🥉 Silver |
-| Andrés Gutiérrez | Bronze |
+::: {.seg-table}
+| Cliente | Gasto total | Segmento |
+|---------|-------------|:--------:|
+| Valentina Ríos | $7.557.000 | 🥇 **Platinum** |
+| Sebastián Morales | $3.799.000 | 🥈 Gold |
+| Daniela Castro | $2.494.700 | 🥈 Gold |
+| Nicolás Pérez | $2.278.100 | 🥈 Gold |
+| Laura Vargas | $1.899.000 | 🥉 Silver |
+| Andrés Gutiérrez | $449.000 | Bronze |
+:::
+
+::: {.sql-note}
+💡 `fn_cliente_segmento()` clasifica automáticamente basado en gasto histórico acumulado de pagos aprobados. Se usa para campañas de fidelización y descuentos personalizados.
 :::
 
 :::
@@ -268,55 +255,62 @@ FROM cliente WHERE activo = TRUE;
 
 ---
 
-## NoSQL + Arquitectura Cloud {background-color="#0d1117"}
+## NoSQL — MongoDB Atlas {background-color="#0d1117"}
 
 ::: {.columns}
-::: {.column width="48%"}
+::: {.column width="46%"}
 
-### MongoDB Atlas — 3 colecciones
+### 3 colecciones diseñadas
 
-::: {.mongo-box blue}
-**catalogo_productos** · `_id` = `producto_id` PostgreSQL
-
-Imágenes, tags, specs técnicas, historial de precios
+::: {.mongo-card .mc-blue}
+**📦 catalogo_productos**
+`_id` = `producto_id` de PostgreSQL
+Imágenes · tags · specs técnicas variables
+Historial de precios · calificación promedio
+→ *Esquema flexible: cada categoría tiene atributos distintos*
 :::
 
-::: {.mongo-box green}
-**sesiones_usuario** · TTL 90 días
-
-Eventos navegación: vistas, búsquedas, clics. Usuarios anónimos incluidos
+::: {.mongo-card .mc-green}
+**📊 sesiones_usuario** · TTL 90 días
+Eventos: vistas, búsquedas, clics, checkout
+Soporta usuarios anónimos (`anon_fingerprint`)
+→ *Alto volumen de escritura — no apto para SQL*
 :::
 
-::: {.mongo-box orange}
-**carritos_abandonados** · TTL 30 días
-
-Remarketing automático. Stock validado en vivo desde PostgreSQL
+::: {.mongo-card .mc-orange}
+**🛒 carritos_abandonados** · TTL 30 días
+Items + precios al momento del abandono
+Stock validado en vivo desde PostgreSQL
+→ *Remarketing automático por email*
 :::
 
 :::
-::: {.column width="52%"}
+::: {.column width="54%"}
 
-### AWS — us-east-1
+### 5 Aggregation Pipelines
 
-::: {.arch-box}
+::: {.agg-box}
+```javascript
+// AGG-1: Top productos más vistos por categoría
+db.sesiones_usuario.aggregate([
+  { $unwind: "$eventos" },
+  { $match: { "eventos.tipo": "vista_producto" } },
+  { $group: { _id: "$eventos.producto_id",
+               total_vistas: { $sum: 1 },
+               tiempo_promedio: { $avg: "$eventos.tiempo_en_pagina_seg" }
+             }},
+  { $sort: { total_vistas: -1 } }
+])
+// AGG-2: Revenue en carritos abandonados
+// AGG-3: Funnel vista→carrito→checkout
+// AGG-4: Segmentación por sesiones ($bucket)
+// AGG-5: Carritos activos + stock en vivo (PostgreSQL)
 ```
-Internet → CloudFront (CDN)
-               ↓
-        API Gateway + JWT
-               ↓
-       Lambda (Node.js 20)
-        /              \
-   Supabase        MongoDB Atlas
-   PostgreSQL        Catálogo/Eventos
-        \              /
-         S3 (imágenes, backups)
-               ↓
-  IAM · Secrets Manager · CloudWatch
-```
 :::
 
-::: {.arch-metrics}
-[$684K/mes]{.metric-orange} con IVA 19% &nbsp;·&nbsp; [Serverless]{.metric-green} escala auto
+::: {.integration-box}
+🔗 **Integración relacional**
+`producto_id` y `cliente_id` en MongoDB son los mismos UUID de PostgreSQL — no se duplica data, solo se enriquece
 :::
 
 :::
@@ -326,68 +320,55 @@ Internet → CloudFront (CDN)
 
 ## Análisis de Resultados {background-color="#0d1117"}
 
-### Datos reales de Supabase · ejecutados en producción
+### 6 queries con datos reales de Supabase
 
-::: {.columns}
-::: {.column width="33%"}
-::: {.result-card}
+::: {.results-grid}
+::: {.res-card}
 **📊 Revenue por categoría**
 
-::: {.bar-row}
-[Electrónica]{.bar-label} [$16.4M]{.bar-value-gold}
+::: {.bar-block}
+Electrónica · [$16.4M]{.rv-gold}
+::: {.bar-fill style="width:80%;background:#e8b84b"}
 :::
-::: {.bar-fill style="width:80%"}
+Ropa y Moda · [$2.2M]{.rv-blue}
+::: {.bar-fill style="width:13%;background:#5ba4f5"}
 :::
-::: {.bar-row}
-[Ropa y Moda]{.bar-label} [$2.2M]{.bar-value-blue}
+Deportes · [$1.9M]{.rv-green}
+::: {.bar-fill style="width:10%;background:#2d9a4e"}
 :::
-::: {.bar-fill-blue style="width:13%"}
-:::
-::: {.bar-row}
-[Deportes]{.bar-label} [$1.9M]{.bar-value-green}
-:::
-::: {.bar-fill-green style="width:11%"}
 :::
 
-[Electrónica = **80%** del revenue]{.insight}
-:::
-:::
-::: {.column width="33%"}
-::: {.result-card}
-**👑 Top clientes**
-
-::: {.client-row}
-Valentina Ríos · [$7.6M]{.val-gold} · Platinum
-:::
-::: {.client-row}
-Sebastián Morales · [$3.8M]{.val-blue} · Gold
-:::
-::: {.client-row}
-Daniela Castro · [$2.5M]{.val-blue} · Gold
-:::
-::: {.client-row}
-Nicolás Pérez · [$2.3M]{.val-blue} · Gold
+[💡 Electrónica = **80%** del revenue con solo 7 uds vendidas. Priorizar stock y campañas aquí.]{.insight-text}
 :::
 
-::: {.insight}
-1 cliente = **41%** del revenue total
-83% compraron solo 1 vez → retención
-:::
-:::
-:::
-::: {.column width="33%"}
-::: {.result-card}
-**🏆 Métricas clave**
+::: {.res-card}
+**👑 Clientes por valor**
 
-| Indicador | Valor |
-|-----------|-------|
-| PSE aprobación | [100%]{.val-green} |
-| NPS implícito | [4.8/5 ⭐]{.val-green} |
-| Servientrega | [100% · 2d]{.val-green} |
-| Mayor margen | [36.8%]{.val-gold} |
-| Stock crítico | [4 uds ⚠️]{.val-red} |
-
+::: {.client-list}
+Valentina Ríos · [$7.6M]{.rv-gold} · Platinum
+Sebastián Morales · [$3.8M]{.rv-blue} · Gold
+Daniela Castro · [$2.5M]{.rv-blue} · Gold
+Nicolás Pérez · [$2.3M]{.rv-blue} · Gold
+Laura Vargas · [$1.9M]{.rv-green} · Silver
+Andrés Gutiérrez · [$449K]{.rv-gray} · Bronze
 :::
+
+[💡 1 cliente = **41%** del revenue. 83% compraron 1 sola vez → campaña de retención urgente.]{.insight-text}
+:::
+
+::: {.res-card}
+**🏆 Métricas operativas**
+
+::: {.kpi-list}
+PSE aprobación · [100%]{.rv-green}
+NPS implícito · [4.8/5 ⭐]{.rv-green}
+Servientrega · [100% · 2 días]{.rv-green}
+Mayor margen · [Bici 36.8%]{.rv-gold}
+Stock crítico · [4 uds ⚠️]{.rv-red}
+Sin reseñas · [Lenovo · 30 uds]{.rv-gold}
+:::
+
+[💡 PSE es el método más confiable. Daviplata tiene 0% aprobación — revisar integración.]{.insight-text}
 :::
 :::
 
@@ -398,53 +379,123 @@ Nicolás Pérez · [$2.3M]{.val-blue} · Gold
 ::: {.columns}
 ::: {.column width="52%"}
 
-### ¿Vale la inversión?
+### La inversión se paga en el mes 1
 
 ::: {.roi-top}
-::: {.roi-box-left}
+::: {.roi-box-l}
 Inversión inicial
-
-[$97.2M COP]{.roi-num-gold}
+[$97.2M COP]{.roi-gold}
+Desarrollo + setup AWS
 :::
-::: {.roi-box-right}
+::: {.roi-box-r}
 Beneficio neto/mes
-
-[$145.5M COP]{.roi-num-green}
+[$145.5M COP]{.roi-green}
+Escenario base (500 pedidos)
 :::
 :::
 
-| Escenario | Revenue/mes | ROI mes 1 |
-|-----------|-------------|-----------|
-| **Base** (500 ped.) | $175M | **+49.6%** |
-| **Optimista** (750) | $262.5M | **+138.6%** |
-| **Pesimista** (200) | $70M | +24.8% |
+| Escenario | Revenue/mes | Costo op. | ROI |
+|-----------|-------------|-----------|-----|
+| **Base** 500 ped. | $175M | $29.5M | [**+49.6%**]{.rv-green} |
+| **Optimista** 750 | $262.5M | $30.7M | [**+138.6%**]{.rv-green} |
+| **Pesimista** 200 | $70M | $29.5M | [+24.8%]{.rv-gold} |
 
 :::
 ::: {.column width="48%"}
 
-### Ahorro por la optimización
+### Ahorro generado por la optimización
 
-::: {.saving-box green}
+::: {.saving-row .sr-green}
 Pérdidas eliminadas → **+$6.6M/mes**
-
 Stock · pagos sin confirmar · Excel manual
 :::
-
-::: {.saving-box green}
-Ahorro anual → **$79.2M/año**
+::: {.saving-row .sr-green}
+**Ahorro anual total → $79.2M COP/año**
 :::
-
-::: {.saving-box gold}
-Infra cloud total → **$684K/mes** con IVA
-
+::: {.saving-row .sr-gold}
+Infra cloud → **$684K/mes** con IVA 19%
 vs $84K del VPS sin backups ni escalabilidad
 :::
 
-::: {.breakeven}
-La inversión se recupera completamente
-
-**en el primer mes de operación**
+::: {.breakeven-box}
+**Punto de equilibrio: Mes 1**
+La inversión inicial de $97.2M queda cubierta
+por el beneficio neto del primer mes de operación
 :::
+
+:::
+:::
+
+---
+
+## Arquitectura Cloud — AWS {background-color="#0d1117"}
+
+::: {.columns}
+::: {.column width="50%"}
+
+::: {.arch-diagram}
+```
+  ┌─────────────────────────────────┐
+  │     USUARIOS / INTERNET         │
+  └──────────────┬──────────────────┘
+                 │ HTTPS / TLS 1.3
+  ┌──────────────▼──────────────────┐
+  │   CloudFront CDN  (us-east-1)   │
+  │   Cache imágenes · assets       │
+  └──────────────┬──────────────────┘
+                 │
+  ┌──────────────▼──────────────────┐
+  │  API Gateway  →  Lambda         │
+  │  Rate limit · JWT auth          │
+  └──────┬───────────────┬──────────┘
+         │               │
+  ┌──────▼──────┐  ┌─────▼────────┐
+  │  Supabase   │  │ MongoDB Atlas │
+  │ PostgreSQL  │  │  M10 NoSQL   │
+  │ (SQL + RLS) │  │ Catálogo/Ev. │
+  └──────┬──────┘  └─────┬────────┘
+         └───────┬────────┘
+  ┌──────────────▼──────────────────┐
+  │  S3: imágenes · backups · logs  │
+  └─────────────────────────────────┘
+  Secrets Manager · IAM · CloudWatch
+```
+:::
+
+:::
+::: {.column width="50%"}
+
+### Servicios y justificación
+
+::: {.service-list}
+::: {.svc-row}
+**Lambda + API Gateway** → Compute serverless
+Sin gestión de servidores · escala a 0 en idle
+$0 cuando no hay tráfico
+:::
+::: {.svc-row}
+**Supabase Pro** → PostgreSQL gestionado
+Backups automáticos · Row Level Security
+Ya operativo en us-east-1
+:::
+::: {.svc-row}
+**MongoDB Atlas M10** → BD documental
+2 vCPU · 2 GB RAM · misma región
+TTL nativo · Atlas Search full-text
+:::
+::: {.svc-row}
+**S3 + CloudFront** → Storage + CDN
+11-noves de durabilidad · distribución global
+Lifecycle policies automáticas
+:::
+::: {.svc-row}
+**Secrets Manager + IAM** → Seguridad
+Credenciales rotadas automáticamente
+Principio de mínimo privilegio por función
+:::
+:::
+
+[**Región:** us-east-1 — misma región que Supabase → 0 latencia entre servicios]{.region-note}
 
 :::
 :::
@@ -454,46 +505,54 @@ La inversión se recupera completamente
 ## Legal, Ético y Roadmap {background-color="#0d1117"}
 
 ::: {.columns}
-::: {.column width="50%"}
+::: {.column width="48%"}
 
-### Marco normativo
+### Marco normativo aplicado
 
-| Norma | Aplicación |
-|-------|------------|
-| **Ley 1581/2012** 🇨🇴 | Datos personales Colombia |
-| **PCI DSS v4.0** | Pagos — SAQ A, sin tarjetas |
-| **GDPR** 🇪🇺 | Expansión futura a UE |
-| **ISO 27001** | IAM · Secrets · Logs |
-| **OWASP Top 10** | Sin SQL injection |
+::: {.law-table}
+| Norma | Alcance |
+|-------|---------|
+| **Ley 1581/2012** 🇨🇴 | Datos personales en Colombia |
+| **Decreto 1377/2013** | Autorización y política de privacidad |
+| **Ley 527/1999** | Validez contratos electrónicos |
+| **PCI DSS v4.0** | Pagos — SAQ A, sin almacenar tarjetas |
+| **GDPR** 🇪🇺 | Expansión futura a Unión Europea |
+| **ISO 27001** | Seguridad de la información |
+| **OWASP Top 10** | Queries parametrizadas, sin SQLi |
+:::
 
 ::: {.legal-note}
-ShopCo **nunca almacena** números de tarjeta — la pasarela certificada lo maneja
+ShopCo **nunca almacena** números de tarjeta.
+El procesamiento ocurre íntegramente en la pasarela certificada.
 :::
 
 :::
-::: {.column width="50%"}
+::: {.column width="52%"}
 
-### Roadmap
+### Roadmap de implementación
 
-::: {.roadmap-item done}
-✅ **Fase 0** — Completado
-
-BD SQL + NoSQL + Análisis + Cloud design
+::: {.road-item .road-done}
+✅ **Fase 0 — Completado**
+BD SQL optimizada en Supabase · Módulo NoSQL diseñado
+Análisis de resultados con datos reales · Cloud architecture
 :::
-::: {.roadmap-item next}
-→ **Fase 1** — 30 días
 
-Deploy Lambda + API Gateway + pasarelas
+::: {.road-item .road-next}
+**→ Fase 1 — 30 días**
+Deploy AWS Lambda + API Gateway
+Integración pasarelas PSE · Nequi · Daviplata
 :::
-::: {.roadmap-item next}
-→ **Fase 2** — 60 días
 
-Dashboard real-time + programa Platinum
+::: {.road-item .road-next}
+**→ Fase 2 — 60 días**
+Dashboard analítico en tiempo real
+Programa de fidelización Platinum/Gold
 :::
-::: {.roadmap-item next}
-→ **Fase 3** — 6 meses
 
-Motor de recomendaciones ML
+::: {.road-item .road-next}
+**→ Fase 3 — 6 meses**
+Motor de recomendaciones basado en historial
+Expansión catálogo + nuevas categorías
 :::
 
 :::
@@ -501,47 +560,40 @@ Motor de recomendaciones ML
 
 ---
 
-# {background-color="#0d1117"}
+## {background-color="#0d1117" .closing-slide}
 
-::: {.closing}
-::: {.closing-title}
+::: {.closing-content}
+::: {.cl-title}
 De $237M en pérdidas
 :::
-::: {.closing-title2}
+::: {.cl-title2}
 a ROI positivo en el mes 1
 :::
-
-<hr class="closing-hr">
-
-::: {.closing-metrics}
-::: {.c-metric}
-[10]{.c-num}
-
+::: {.cl-hr}
+:::
+::: {.cl-metrics}
+::: {.cl-box}
+[10]{.cl-num}
 Tablas en 3FN
 :::
-::: {.c-metric}
-[24]{.c-num}
-
+::: {.cl-box}
+[24]{.cl-num}
 Reglas de negocio
 :::
-::: {.c-metric}
-[3]{.c-num}
-
+::: {.cl-box}
+[3]{.cl-num}
 Colecciones NoSQL
 :::
-::: {.c-metric}
-[49.6%]{.c-num-green}
-
+::: {.cl-box}
+[49.6%]{.cl-num-green}
 ROI mes 1
 :::
 :::
-
-::: {.closing-cta}
+::: {.cl-cta}
 ShopCo tiene los datos, la arquitectura y el análisis para escalar.
 **Solo falta ejecutar.**
 :::
-
-::: {.closing-link}
+::: {.cl-link}
 github.com/julianjimenez4809-ui/proyecto-final-bases-datos
 :::
 :::
